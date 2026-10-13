@@ -1,0 +1,10 @@
+build/
+*.elf
+*.nro
+*.nacp
+*.pfs0
+*.nsp
+src.*
+inventory.log
+desktop.ini
+romfs/images/*.fw.png

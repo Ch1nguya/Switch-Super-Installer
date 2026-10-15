@@ -41,7 +41,7 @@ Switch-Super-Installer is built on TinWoo, itself based on Awoo Installer. On to
 
 ## Install
 
-Copy `Switch-Super-Installer.nro` to `/switch/` on your SD card and launch it from the album (full-memory mode: applet mode is not supported).
+Copy `Switch-Super-Installer.nro` to `/switch/` on your SD card and launch it in full-memory mode: start a game while holding R (title override), not from the Album (applet mode has limited memory and is not supported).
 
 ## Support the project
 

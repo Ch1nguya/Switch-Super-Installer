@@ -1,5 +1,5 @@
 param(
-    [string]$Tag = "20240224",
+    [string]$Image = "devkitpro/devkita64@sha256:1fc388c3a0d34bd2045a6dadcb1020e069d5f876a187fd705de14b4440c00282",
     [int]$Jobs = 4,
     [switch]$NoClean
 )
@@ -14,9 +14,14 @@ function Run-ContainerMake {
 
     $mount = "${PWD}:/source"
     Write-Host ">> docker run --rm -v `"$mount`" -w /source $Image bash -lc `"$MakeCommand`"" -ForegroundColor Cyan
+    # Compiler warnings go to stderr: do not let PowerShell treat them as errors, rely on the exit code.
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     & docker run --rm -v $mount -w /source $Image bash -lc $MakeCommand
-    if ($LASTEXITCODE -ne 0) {
-        throw "Docker build command failed with exit code $LASTEXITCODE"
+    $exitCode = $LASTEXITCODE
+    $ErrorActionPreference = $previous
+    if ($exitCode -ne 0) {
+        throw "Docker build command failed with exit code $exitCode"
     }
 }
 
@@ -25,7 +30,7 @@ Set-Location $repoRoot
 
 Write-Host "== Switch-Super-Installer Docker build ==" -ForegroundColor Green
 Write-Host "Repo : $repoRoot"
-Write-Host "Tag  : $Tag"
+Write-Host "Image: $Image"
 Write-Host "Jobs : $Jobs"
 Write-Host ""
 
@@ -36,7 +41,7 @@ catch {
     throw "Docker is not available. Start Docker Desktop and retry."
 }
 
-$image = "devkitpro/devkita64:$Tag"
+$image = $Image
 
 if (-not $NoClean) {
     Run-ContainerMake -Image $image -MakeCommand "make clean"

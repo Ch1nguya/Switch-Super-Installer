@@ -41,7 +41,7 @@ Switch-Super-Installer is built on TinWoo, itself based on Awoo Installer. On to
 
 ## Install
 
-Copy `Switch-Super-Installer.nro` to `/switch/` on your SD card and launch it in full-memory mode: start a game while holding R (title override), not from the Album (applet mode has limited memory and is not supported).
+Copy `Switch-Super-Installer.nro` to `/switch/` on your SD card and launch it from the Homebrew Menu.
 
 ## Support the project
 
@@ -53,22 +53,22 @@ Switch-Super-Installer and Switch-Super-Manager are free and made on my spare ti
 
 ## Building
 
-The network install is sensitive to the toolchain version: build with the `devkitpro/devkita64:20240224` Docker image. Newer versions of `libnx` or `libcurl` may introduce silent network hangs.
+Build with the devkitA64 Docker image below (libnx 4.12.0, SDL 2.28.5). It is pinned by its digest, so the build is reproducible. Builds made with the older toolchain (libnx 4.6.0, `devkitpro/devkita64:20240224`) crash on firmware 23.x.
 
 ```bash
-docker pull devkitpro/devkita64:20240224
+docker pull devkitpro/devkita64@sha256:1fc388c3a0d34bd2045a6dadcb1020e069d5f876a187fd705de14b4440c00282
 ```
 
 From the folder that holds the `Makefile`, a full build:
 
 ```bash
-docker run --rm -v "$(pwd):/source" -w /source devkitpro/devkita64:20240224 /bin/bash -c "make clean && make"
+docker run --rm -v "$(pwd):/source" -w /source devkitpro/devkita64@sha256:1fc388c3a0d34bd2045a6dadcb1020e069d5f876a187fd705de14b4440c00282 /bin/bash -c "make clean && make"
 ```
 
 An incremental build (only the modified files):
 
 ```bash
-docker run --rm -v "$(pwd):/source" -w /source devkitpro/devkita64:20240224 make
+docker run --rm -v "$(pwd):/source" -w /source devkitpro/devkita64@sha256:1fc388c3a0d34bd2045a6dadcb1020e069d5f876a187fd705de14b4440c00282 make
 ```
 
 The result is `source.nro`: rename it to `Switch-Super-Installer.nro`. On Windows, `build_docker.ps1` does all of this.
